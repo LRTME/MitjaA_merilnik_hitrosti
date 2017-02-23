@@ -30,6 +30,8 @@ void main(void)
 
     // inicializiram ADC in PWM modul
     PWM_init();
+   // inicializiram SPI
+    SPI_init();
 
     // inicializiram peridoièno prekinitev za regulacijo motorja
     PER_int_setup();
@@ -40,8 +42,8 @@ void main(void)
 
     // pozenem casovnik, ki bo prozil ADC in prekinitev
     PWM_start();
-    PWM_update(0.0);
-
+    PWM_update_hit(0.0);
+    PWM_update_poz(0.0);
     // grem v neskoncno zanko, ki se izvaja v ozadju
     BACK_loop();
 }   // end of main

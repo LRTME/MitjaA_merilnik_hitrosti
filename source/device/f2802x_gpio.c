@@ -53,6 +53,19 @@ void InitGpio(void)
    GpioCtrlRegs.GPBPUD.all = 0x0000;      // Pullup's enabled GPIO32-GPIO34
    //GpioCtrlRegs.GPAPUD.all = 0xFFFF;    // Pullup's disabled GPIO0-GPIO31
    //GpioCtrlRegs.GPBPUD.all = 0xFFFF;    // Pullup's disabled GPIO32-GPIO34
+
+
+   //Nastavi pina RE in DE na vrednosti da bo komunikacija med uC in senzorjem kot delovala
+
+   //naj bota output
+   GpioCtrlRegs.GPADIR.bit.GPIO2=1;
+   GpioCtrlRegs.GPADIR.bit.GPIO3=1;
+
+   // vrednosti
+   GpioDataRegs.GPASET.bit.GPIO2=1;
+   GpioDataRegs.GPACLEAR.bit.GPIO3=1;
+
+
    EDIS;
 
 }

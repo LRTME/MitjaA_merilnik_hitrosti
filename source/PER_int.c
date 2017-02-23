@@ -8,7 +8,7 @@
 
 // spremenljikva s katero štejemo kolikokrat se je prekinitev predolgo izvajala
 int interrupt_overflow_counter = 0;
-
+int zapwm;
 /**************************************************************
 * Prekinitev, ki v kateri se izvaja regulacija
 **************************************************************/
@@ -16,7 +16,7 @@ int interrupt_overflow_counter = 0;
 void interrupt PER_int(void)
 {
     /* lokalne spremenljivke */
-    
+
     // najprej povem da sem se odzzval na prekinitev
     // Spustimo INT zastavico casovnika ePWM1
     EPwm1Regs.ETCLR.bit.INT = 1;
@@ -25,12 +25,13 @@ void interrupt PER_int(void)
     
     // povecam stevec prekinitev
     interrupt_cnt = interrupt_cnt + 1;
+
     if (interrupt_cnt >= SAMPLE_FREQ)
     {
         interrupt_cnt = 0;
     }
-
-    PWM_update(0);
+    SPI_getkot();
+    PWM_update_hit(zapwm);
 
     // spavim vrednosti v buffer za prikaz
     DLOG_GEN_update();
@@ -75,7 +76,7 @@ void PER_int_setup(void)
     dlog.trig = &interrupt_cnt;
     dlog.trig_value = 1;
 
-    dlog.iptr1 = &interrupt_cnt;
+    dlog.iptr1 = &zapwm;
     dlog.iptr2 = &interrupt_cnt;
 
     // Proženje prekinitve
