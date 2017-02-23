@@ -7,4 +7,4 @@
 #include "globals.h"
 
 
-long interrupt_cnt = 0;
+volatile long interrupt_cnt = 0;

@@ -39,6 +39,32 @@ void InitSysCtrl(void)
    // Disable the watchdog
    DisableDog();
 
+   if (&RamfuncsLoadStart != &RamfuncsRunStart)
+   {
+       //
+       // Copy time critical code and Flash setup code to RAM. This includes the
+       // following functions: InitFlash()
+       //
+       // The  RamfuncsLoadStart, RamfuncsLoadSize, and RamfuncsRunStart
+       // symbols are created by the linker. Refer to the device .cmd file.
+       //
+       //---------------------------------------------------------------------------
+       // External symbols created by the linker cmd file
+       // DSP28 examples will use these to relocate code from one LOAD location
+       // in Flash to a different RUN location in internal
+       // RAM
+       extern Uint16 RamfuncsLoadStart;
+       extern Uint16 RamfuncsLoadEnd;
+       extern Uint16 RamfuncsRunStart;
+       extern Uint16 RamfuncsLoadSize;
+       extern void MemCopy(Uint16 *SourceAddr, Uint16* SourceEndAddr, Uint16* DestAddr);
+
+       MemCopy(&RamfuncsLoadStart, &RamfuncsLoadEnd, &RamfuncsRunStart);
+       //memcpy(&RamfuncsRunStart, &RamfuncsLoadStart, (size_t)&RamfuncsLoadSize);
+
+       InitFlash();
+   }
+
     // *IMPORTANT*
     // The Device_cal function, which copies the ADC & oscillator calibration values
     // from TI reserved OTP into the appropriate trim registers, occurs automatically
@@ -75,7 +101,7 @@ void InitSysCtrl(void)
 //                   CAUTION
 // This function MUST be executed out of RAM. Executing it
 // out of OTP/Flash will yield unpredictable results
-
+#pragma CODE_SECTION(InitFlash, "ramfuncs");
 void InitFlash(void)
 {
    EALLOW;

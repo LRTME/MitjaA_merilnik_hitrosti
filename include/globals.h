@@ -11,6 +11,6 @@
 
 #include    "define.h"
 
-extern long interrupt_cnt;
+extern volatile long interrupt_cnt;
 
 #endif // end of __GLOBALS_H__ definition

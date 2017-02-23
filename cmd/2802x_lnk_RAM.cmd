@@ -17,6 +17,8 @@ PAGE 0 :
     BEGIN       : origin = 0x3F7FF6, length = 0x000002     /* Part of FLASHA.  Used for "boot to Flash" bootloader mode. */
     CSM_PWL_P0  : origin = 0x3F7FF8, length = 0x000008     /* Part of FLASHA.  CSM password locations in FLASHA */
     FLASHB      : origin = 0x3F6000, length = 0x001000     /* on-chip FLASH */
+    FLASHC      : origin = 0x3F5000, length = 0x001000     /* on-chip FLASH */
+    FLASHD      : origin = 0x3F4000, length = 0x001000     /* on-chip FLASH */
 
     IQTABLES    : origin = 0x3FE000, length = 0x000B50     /* IQ Math Tables in Boot ROM */
     IQTABLES2   : origin = 0x3FEB50, length = 0x00008C     /* IQ Math Tables in Boot ROM */
@@ -79,7 +81,7 @@ SECTIONS
     .const: >       RAML0,          PAGE = 0
 
 /* STARTUP CODE */
-    codestart >     BEGIN           PAGE = 0
+    codestart >     RESET_M         PAGE = 0
     .reset: >       RAML0,          PAGE = 0
     .cinit: >       RAML0,          PAGE = 0
 
