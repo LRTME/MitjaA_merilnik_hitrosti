@@ -9,6 +9,11 @@
 // spremenljikva s katero štejemo kolikokrat se je prekinitev predolgo izvajala
 int interrupt_overflow_counter = 0;
 
+// samo za demonstracijo IQ knjižnice
+_iq kot = _IQ(0.0);
+_iq frekvenca = _IQ(50.0);
+
+
 /**************************************************************
 * Prekinitev, ki v kateri se izvaja regulacija
 **************************************************************/
@@ -29,6 +34,9 @@ void interrupt PER_int(void)
     {
         interrupt_cnt = 0;
     }
+
+    // primer integralnega èlena
+    kot = kot + _IQmpy(frekvenca, _IQ(1.0/SWITCH_FREQ));
 
     PWM_update(0);
 
