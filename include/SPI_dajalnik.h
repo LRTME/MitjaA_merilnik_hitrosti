@@ -17,7 +17,7 @@
 #define SPI_MUX_VALUE   1
 
 // hitrost komunikacije ~ 2 MHz
-#define SPI_CLK         10000000
+#define SPI_CLK         2000000
 
 // koliko bitov moramo poslati, da dobimo celotno informacijo
 #define SPI_BITS        16
@@ -27,7 +27,7 @@
 
 // kje znotraj dwords se nahaja informacija
 #define SPI_MSB         15
-#define SPI_LSB         5
+#define SPI_LSB         3
 
 /**************************************************************
 * Funckija ki inicializira komunikacijo

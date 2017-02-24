@@ -7,8 +7,9 @@
 #include "PWM_drv.h"
 
 // prototipi lokalnih funkcij
-
-
+void PWM_init(void);
+void PWM_update_hit(int duty);
+void PWM_update_poz(int duty);
 /**************************************************************
 * Funkcija, ki popiše registre za PWM1,2 in 3. Znotraj funkcije
 * se omogoèi interrupt za proženje ADC, popiše se perioda, compare
