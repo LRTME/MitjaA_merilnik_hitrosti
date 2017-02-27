@@ -70,15 +70,15 @@ void PWM_init(void)
     EPwm3Regs.AQCTLA.bit.CAD = AQ_SET;    // set output on CMPA_DOWN
 
     // Init Action Qualifier Output B Register
-    EPwm3Regs.AQCTLB.bit.CAU = AQ_CLEAR;  // clear output on CMPA_UP
-    EPwm3Regs.AQCTLB.bit.CAD = AQ_SET;    // set output on CMPA_DOWN
+    EPwm3Regs.AQCTLB.bit.CBU = AQ_CLEAR;  // clear output on CMPA_UP
+    EPwm3Regs.AQCTLB.bit.CBD = AQ_SET;    // set output on CMPA_DOWN
 
     // Dead Time
     
     // Trip zone 
 
-    PWM_update_poz(0.0);
-    PWM_update_hit(0.0);
+    //PWM_update_poz(0.0);
+    //PWM_update_hit(0.0);
     // output pin setup
     EALLOW;
     GpioCtrlRegs.GPAMUX1.bit.GPIO4 = 1;   // GPIO4 pin is under ePWM control

@@ -6,21 +6,31 @@
 ****************************************************************/
 #include    "PER_int.h"
 
+
 // spremenljikva s katero štejemo kolikokrat se je prekinitev predolgo izvajala
 int interrupt_overflow_counter = 0;
-int zapwm;
-long kot;
 
 
 
-float hitrost_abf = 0.0;
 
-float kot_abf = 0;
-float epsilon = 0;
-float dt = 5e-5;
-float alpha = 0.0883642;
-float betha = 0.0000142122;
-float pi = 3.14159265359;
+
+long kot_iz_senzorja;
+float frek;
+
+
+
+
+_iq f_abf=_IQ(0.0);
+_iq kot_abf=_IQ(0.0);
+_iq epsilon=_IQ(0.0);
+_iq dt=_IQ(0.00005);
+_iq alpha=_IQ(0.0883642);
+_iq betha=_IQ(0.0000142122);
+
+
+
+
+
 /**************************************************************
 * Prekinitev, ki v kateri se izvaja regulacija
 **************************************************************/
@@ -42,40 +52,43 @@ void interrupt PER_int(void)
     {
         interrupt_cnt = 0;
     }
-    kot=SPI_getkot();
-
-    PWM_update_poz(((int)kot)<<2);
 
 
 
+    kot_iz_senzorja=SPI_getkot();
 
-    kot *=2*pi/1024;
+   PWM_update_poz((int)(kot_iz_senzorja*9));
 
-            kot_abf+=2*pi*hitrost_abf*dt;
-            if(kot_abf>2*pi)
+
+//Algoritem za izracun frekvence
+
+            kot_abf+=_IQmpy(f_abf,dt);
+            if(kot_abf>_IQ(1.0))
             {
-            	kot_abf-=2*pi;
+            	kot_abf-=_IQ(1.0);
                             }
             if(kot_abf < 0 )
             {
-            	kot_abf +=2*pi;
+            	kot_abf +=_IQ(1.0);
             }
 
-            epsilon= kot- kot_abf;
-            if(epsilon>pi)
+            epsilon= (kot_iz_senzorja<<12)- kot_abf;
+            if(epsilon>_IQ(1.0))
             {
-            	epsilon-=2*pi;
+            	epsilon-=_IQ(1.0);
             }
-            if(epsilon < -pi )
+            if(epsilon < -_IQ(1.0) )
             {
-            	epsilon +=2*pi;
+            	epsilon +=_IQ(1.0);
             }
 
-             kot_abf+= alpha*epsilon;
+             kot_abf+=_IQmpy(alpha,epsilon);
 
-             hitrost_abf=((hitrost_abf)+((betha/dt)*epsilon));
+             f_abf+=_IQmpy(epsilon,_IQdiv(betha,dt));
 
-             PWM_update_hit(((int)hitrost_abf)<<5);
+             frek= _IQtoF(f_abf);// frekvenca za prikaz v float formatu
+
+           PWM_update_hit((int)(((f_abf>>12)*220)>>12));  // frekvenco v 8.24 foramtu pomnozis s faktorjem da bo rezultat manjsi od 11196
 
 
 
@@ -134,8 +147,9 @@ void PER_int_setup(void)
     dlog.trig = &interrupt_cnt;
     dlog.trig_value = 1;
 
-    dlog.iptr1 = &zapwm;
-    dlog.iptr2 = &kot;
+    dlog.iptr1 = &kot_iz_senzorja;
+    dlog.iptr2 = &kot_abf;
+    dlog.iptr3 = &f_abf;
 
     // Proženje prekinitve
     EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;    //sproži prekinitev na periodo

@@ -15,6 +15,7 @@
 #include    "PWM_drv.h"
 #include    "PCB_util.h"
 #include    "math.h"
+#include    "IQmathLib.h"
 
 #include    "DLOG_gen.h"
 
